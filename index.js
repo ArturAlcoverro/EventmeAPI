@@ -4,8 +4,8 @@ const express = require("express");
 const app = express();
 
 const usersRoute = require("./routes/users.route");
-const videogameRoute = require("./routes/videogames.route");
-const scoreRoute = require("./routes/score.route");
+const usersRoute = require("./routes/events.route");
+const usersRoute = require("./routes/friends.route");
 
 app.use(express.static("public"));
 app.use(express.json());
