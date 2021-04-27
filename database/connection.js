@@ -7,4 +7,4 @@ var connection = mysql.createConnection({
     database: process.env.DB_DATABASE,
 });
 
-module.exports = { connection };
+module.exports = connection;

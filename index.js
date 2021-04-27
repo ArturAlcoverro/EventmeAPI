@@ -3,19 +3,21 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 
+const port = process.env.PORT || 3000;
+const host = process.env.HOST_NAME || "localhost";
+
 const usersRoute = require("./routes/users.route");
-const usersRoute = require("./routes/events.route");
-const usersRoute = require("./routes/friends.route");
+const eventsRoute = require("./routes/events.route");
+const friendsRoute = require("./routes/friends.route");
+const messagesRoute = require("./routes/messages.route");
 
 app.use(express.static("public"));
 app.use(express.json());
 
-const port = process.env.PORT || 3000;
-const host = process.env.HOST_NAME || "localhost";
-
-app.use("/api/users", usersRoute);
-app.use("/api/videogames", videogameRoute);
-app.use("/api/scores", scoreRoute);
+app.use("/users", usersRoute);
+// app.use("/events", eventsRoute);
+// app.use("/friends", friendsRoute);
+// app.use("/messages", messagesRoute);
 
 app.all("/api/*", (req, res, next) => {
     console.log(req.url);
@@ -31,11 +33,4 @@ app.use((err, req, res, next) => {
 
 app.listen(port, () => {
     console.log(`http://${host}:${port}`);
-    console.log(`http://${host}:${port}/api/users/`);
-    console.log(`http://${host}:${port}/api/users/3`);
-    console.log(`http://${host}:${port}/api/videogames/`);
-    console.log(`http://${host}:${port}/api/videogames/3`);
-    console.log(`http://${host}:${port}/api/videogames/97`);
-    console.log(`http://${host}:${port}/api/videogames/load`);
-    console.log(`http://${host}:${port}/api/scores/puntua/3/3/5`);
 });
