@@ -2,8 +2,10 @@ const router = require("express").Router();
 
 const controller = require("../controller/users.controller");
 const auth = require("../controller/auth.controller");
+const authValidator = require("../validation/auth.validation")
 
-router.get("/login", auth.login);
+
+router.post("/login", authValidator.login, auth.login);
 router.get("/search", controller.search);
 
 router.get("/", controller.get);

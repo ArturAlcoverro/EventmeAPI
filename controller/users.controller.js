@@ -31,7 +31,7 @@ async function search(req, res, next){
 }
 
 async function get(req, res, next){
-
+    
 }
 
 async function update(req, res, next){

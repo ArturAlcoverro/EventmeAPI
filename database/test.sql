@@ -2,7 +2,7 @@ CREATE TABLE `eventme`.`users` (
     `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT , 
     `image` VARCHAR(255) NULL , 
     `name` VARCHAR(255) NOT NULL , 
-    `full_name` VARCHAR(255) NOT NULL , 
+    `last_name` VARCHAR(255) NOT NULL , 
     `email` VARCHAR(255) NOT NULL UNIQUE, 
     `password` VARCHAR(255) NOT NULL, 
     PRIMARY KEY (`id`) ) ;

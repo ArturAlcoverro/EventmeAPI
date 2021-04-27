@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const controller = require("../controller/messages.controller")
+const controller = (require)("../controller/messages.controller")
 
 router.post("/", controller.create)
 router.get("/users", controller.get)

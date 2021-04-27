@@ -915,7 +915,7 @@ CREATE TABLE `users` (
   `id` int(10) UNSIGNED NOT NULL,
   `image` varchar(255) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
-  `full_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -924,7 +924,7 @@ CREATE TABLE `users` (
 -- Volcado de datos para la tabla `users`
 --
 
-INSERT INTO `users` (`id`, `image`, `name`, `full_name`, `email`, `password`) VALUES
+INSERT INTO `users` (`id`, `image`, `name`, `last_name`, `email`, `password`) VALUES
 (1, 'http://dummyimage.com/128x100.png/cc0000/ffffff', 'mgiberd0', 'Myrta Giberd', 'mgiberd0@123-reg.co.uk', 'aoZzdeoedQ'),
 (2, 'http://dummyimage.com/244x100.png/cc0000/ffffff', 'ldeeny1', 'Lynette Deeny', 'ldeeny1@printfriendly.com', 'WY5KNC'),
 (3, 'http://dummyimage.com/234x100.png/dddddd/000000', 'dmcnirlan2', 'Dorolice McNirlan', 'dmcnirlan2@storify.com', 'Y46StLX6pz'),

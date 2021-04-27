@@ -1,10 +1,5 @@
 const conn = require("../database/connection");
-
-async function getByLogin(login) {
-    let query = `SELECT * FROM users where login = ?`;
-    const [rows] = await conn.promise().query(query, [login]);
-    return rows[0];
-}
+let bcrypt = require("bcrypt");
 
 async function insert(user) {
     const [resultado] = await conn
@@ -16,22 +11,24 @@ async function insert(user) {
     return user;
 }
 
+async function getUserByEmail (email, next){
+    let users
+    try {
+        [users] = await conn.promise().query(`SELECT * FROM users where email = ?`, [email]);
+    } catch (ex) {
+        return next({
+            status: 500,
+            error: "Error en la base de datos",
+            trace: "ex",
+        });
+    }
+    if (!users[0]) return next({ status: 404, error: "Recurso no encontrado" });
+    return users[0];
+}
+
 async function login(req, res, next) {
     try {
-        let user;
-        try {
-            user = await getByLogin(req.body.login);
-        } catch (ex) {
-            return next({
-                status: 500,
-                error: "Error en la base de datos",
-                trace: "ex",
-            });
-        }
-
-        if (!user) return next({ status: 404, error: "Recurso no encontrado" });
-
-        const bcrypt = require("bcrypt");
+        let user = await getUserByEmail(req.body.email, next)
         bcrypt.compare(req.body.password, user.password, (error, result) => {
             if (error) return next({ status: 404, error: "Recurso no encontrado" });
             if (!result) return next({ status: 404, error: "Recurso no encontrado" });
@@ -51,7 +48,6 @@ async function login(req, res, next) {
 }
 
 async function register(req, res, next) {
-    const bcrypt = require("bcrypt");
     const saltRounds = 10;
     const myPlaintextPassword = req.body.password;
 
