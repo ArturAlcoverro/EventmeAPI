@@ -37,7 +37,7 @@ async function login(req, res, next) {
 
             const jwt = require("jsonwebtoken");
             const token = jwt.sign(
-                JSON.stringify(user),
+                JSON.stringify( ),
                 process.env.ACCESS_TOKEN_SECRET
             );
             res.json({ token });

@@ -1,15 +1,22 @@
 const router = require("express").Router();
 
 const controller = require("../controller/users.controller");
-const auth = require("../controller/auth.controller");
+const validator = require("../validation/users.validation");
+
+const authController = require("../controller/auth.controller");
 const authValidator = require("../validation/auth.validation")
 
+const authMiddleware = require("../authentication");
 
-router.post("/login", authValidator.login, auth.login);
-router.get("/search", controller.search);
+//PUBLIC
+router.post("/login", authValidator.login, authController.login);
+router.post("/", authController.register);
 
+router.use(authMiddleware);
+
+//PRIVATE
 router.get("/", controller.get);
-router.post("/", auth.register);
+router.get("/search", validator.search, controller.search);
 router.put("/", controller.update);
 router.delete("/", controller.del);
 
