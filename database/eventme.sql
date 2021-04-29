@@ -151,12 +151,12 @@ CREATE TABLE `events` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(255) NOT NULL,
   `owner_id` int(10) UNSIGNED NOT NULL,
-  `date` date NOT NULL,
+  `date` TIMESTAMP NOT NULL,
   `image` varchar(255) DEFAULT NULL,
   `location` varchar(255) NOT NULL,
   `description` text,
-  `eventStart_date` date NOT NULL,
-  `eventEnd_date` date NOT NULL,
+  `eventStart_date` TIMESTAMP NOT NULL,
+  `eventEnd_date` TIMESTAMP NOT NULL,
   `n_participators` int(10) UNSIGNED NOT NULL,
   `type` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -396,7 +396,7 @@ CREATE TABLE `messages` (
   `content` text NOT NULL,
   `user_id_send` int(10) UNSIGNED NOT NULL,
   `user_id_recived` int(10) UNSIGNED NOT NULL,
-  `time_stamp` datetime NOT NULL
+  `time_stamp` TIMESTAMP NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --

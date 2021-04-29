@@ -13,8 +13,12 @@ const eventsRoute = require("./routes/events.route");
 const friendsRoute = require("./routes/friends.route");
 const messagesRoute = require("./routes/messages.route");
 
+const authMiddleware = require("./authentication");
+
 app.use(express.json());
 app.use(fileupload())
+
+app.use('/image', authMiddleware, express.static(__dirname + '/uploads'))
 
 app.get('/upload/:FILENAME', function (req, res) {
 	res.download("./uploads/" + req.params.FILENAME)
@@ -28,9 +32,7 @@ app.post('/upload', function (req, res) {
 		res.status(400).send('No files were uploaded.');
 		return;
 	}
-
-	console.log(__dirname); // eslint-disable-line
-
+	console.log(req.body.id)
 	sampleFile = req.files.sampleFile;
 
 	uploadPath = __dirname + '/uploads/img.jpg';
@@ -57,7 +59,7 @@ app.all("/api/*", (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-	console.log("error", err);
+	console.log("ERROR:", err);
 	res.json(err);
 });
 

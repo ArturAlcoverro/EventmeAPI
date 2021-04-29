@@ -37,7 +37,7 @@ async function login(req, res, next) {
 
             const jwt = require("jsonwebtoken");
             const token = jwt.sign(
-                JSON.stringify( ),
+                JSON.stringify(user),
                 process.env.ACCESS_TOKEN_SECRET
             );
             res.json({ token });
@@ -61,7 +61,7 @@ async function register(req, res, next) {
         req.body.password = hash;
         try {
             const response = await insert(req.body);
-            res.json(response);
+            res.status(201).json(response);
         } catch (ex) {
             next({ status: 500, error: "error al insertar el usuario", trace: ex });
         }
