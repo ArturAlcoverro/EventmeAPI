@@ -1,9 +1,15 @@
 const router = require("express").Router();
 const controller = require("../controller/events.controller")
+const authMiddleware = require("../authentication");
 
-router.post("/", controller.create)
+//PUBLIC
 router.get("/", controller.get)
 router.get("/:ID", controller.getByID)
+
+router.use(authMiddleware);
+
+//PRIVATE
+router.post("/", controller.create)
 router.put("/:ID", controller.update)
 router.delete("/:ID", controller.del)
 router.get("/:ID/assistances", controller.getAssistances)

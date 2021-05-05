@@ -1,30 +1,123 @@
 const conn = require("../database/connection");
 
 
-async function getRequests (req, res, next){
-
+async function getRequests(req, res, next) {
+    conn.promise()
+        .query(`
+            SELECT u.id, u.name, u.last_name, u.image, u.email
+            FROM users AS u
+            INNER JOIN friends AS f
+            ON f.user_id = u.id
+            AND f.status = 0
+            WHERE f.user_id_friend = ?
+        `, [req.USER.id])
+        .then(([requests]) => {
+            res.json(requests)
+        })
+        .catch(err => {
+            return next({
+                status: 500,
+                error: `Server error`,
+                trace: err
+            });
+        })
 }
 
-async function get (req, res, next){
-
+async function get(req, res, next) {
+    conn.promise()
+        .query(`
+            SELECT u.id, u.name, u.last_name, u.image, u.email
+            FROM users AS u
+            INNER JOIN friends AS f
+            ON ((f.user_id = u.id AND f.user_id_friend = ?)
+            OR (f.user_id_friend = u.id AND f.user_id = ?))
+            AND f.status = 1
+        `, [req.USER.id, req.USER.id])
+        .then(([requests]) => {
+            res.json(requests)
+        })
+        .catch(err => {
+            return next({
+                status: 500,
+                error: `Server error`,
+                trace: err
+            });
+        })
 }
 
-async function request (req, res, next){
-
+async function request(req, res, next) {
+    conn.promise()
+        .query(`
+            INSERT INTO friends
+            SET user_id = ?,
+            user_id_friend = ?,
+            status = 0
+        `, [req.USER.id, req.params.ID])
+        .then(([requests]) => {
+            res.status(204).send()
+        })
+        .catch(err => {
+            return next({
+                status: 409,
+                error: `The request could not be sent`,
+                trace: err
+            });
+        })
 }
 
-async function accept (req, res, next){
-
+async function accept(req, res, next) {
+    conn.promise()
+        .query(`
+            UPDATE friends
+            SET status = 1
+            WHERE user_id = ?
+            AND user_id_friend = ?
+        `, [req.USER.id, req.params.ID])
+        .then(([result]) => {
+            if (result.affectedRows < 1)
+                return next({
+                    status: 409,
+                    error: `This request does not exist`,
+                })
+            res.status(204).send()
+        })
+        .catch(err => {
+            return next({
+                status: 409,
+                error: `The request could not be accepted`,
+                trace: err
+            });
+        })
 }
 
-async function del (req, res, next){
-
+async function del(req, res, next) {
+    conn.promise()
+        .query(`
+            DELETE FROM friends
+            WHERE user_id = ? AND user_id_friend = ?
+            OR user_id = ? AND user_id_friend = ?
+        `, [req.USER.id, req.params.ID, req.params.ID, req.USER.id])
+        .then(([result]) => {
+            if (result.affectedRows < 1)
+                return next({
+                    status: 409,
+                    error: `This request does not exist`,
+                })
+            res.status(200).json(result)
+        })
+        .catch(err => {
+            return next({
+                status: 409,
+                error: `The request could not be deleted`,
+                trace: err
+            });
+        })
 }
 
-module.exports = { 
-    getRequests, 
-    get, 
-    request, 
-    accept, 
+module.exports = {
+    getRequests,
+    get,
+    request,
+    accept,
     del
 }

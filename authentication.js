@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const conn = require("./database/connection");
 
 function authenticate(req, res, next) {
   //verificar si el usuario aun existe
@@ -10,7 +11,7 @@ function authenticate(req, res, next) {
     return next({
       status: "401",
       error: "No estas autenticado",
-      hint: "Has probado a hacer login? http://localhost:3000/login",
+      stack: err,
     });
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
@@ -21,10 +22,27 @@ function authenticate(req, res, next) {
         stack: err,
       });
 
-    // guardo el usuario en la request.
-    req.USER = user;
-
-    next();
+    conn.promise()
+      .query(`SELECT id FROM users WHERE id = ?`
+        , [user.id])
+      .then(([users]) => {
+        if (users.length === 0) {
+          next({
+            status: "401",
+            error: "No estas autenticado",
+            stack: err,
+          });
+        }
+        req.USER = user;
+        next();
+      })
+      .catch(err => {
+        next({
+          status: 500,
+          error: `Server error`,
+          track: err
+        });
+      })
   });
 }
 

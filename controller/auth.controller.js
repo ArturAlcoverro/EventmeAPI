@@ -11,7 +11,7 @@ async function insert(user) {
     return user;
 }
 
-async function getUserByEmail (email, next){
+async function getUserByEmail(email, next) {
     let users
     try {
         [users] = await conn.promise().query(`SELECT * FROM users where email = ?`, [email]);
@@ -43,27 +43,28 @@ async function login(req, res, next) {
             res.json({ token });
         });
     } catch (error) {
-        next({ status: 500, error: "Recurso no encontrado", stacktrace: error });
+        return next({ status: 500, error: "Recurso no encontrado", stacktrace: error });
     }
 }
 
 async function register(req, res, next) {
     const saltRounds = 10;
     const myPlaintextPassword = req.body.password;
-
-    bcrypt.hash(myPlaintextPassword, saltRounds, async (err, hash) => {
+    console.log(salt);
+    bcrypt.hash(myPlaintextPassword, salt, async function (err, hash) {
         if (err)
-            next({
+            return next({
                 status: 500,
                 error: "error al encriptar el password",
                 trace: err,
             });
+        console.log(hash)
         req.body.password = hash;
         try {
             const response = await insert(req.body);
             res.status(201).json(response);
         } catch (ex) {
-            next({ status: 500, error: "error al insertar el usuario", trace: ex });
+            return next({ status: 500, error: "error al insertar el usuario", trace: ex });
         }
     });
 }

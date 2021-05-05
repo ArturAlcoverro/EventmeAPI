@@ -1,5 +1,8 @@
 const router = require("express").Router();
 const controller = require("../controller/friends.controller")
+const authMiddleware = require("../authentication");
+
+router.use(authMiddleware);
 
 router.get("/requests", controller.getRequests)
 router.get("/", controller.get)
