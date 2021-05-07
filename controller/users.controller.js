@@ -1,4 +1,5 @@
 const conn = require("../database/connection");
+const { uploadImage } = require("../upload")
 
 async function search(req, res, next) {
     const like = `%${req.query.s}%`
@@ -38,35 +39,50 @@ async function get(req, res, next) {
         })
 }
 
-async function update(req, res, next) {
+async function update(req, res, next) { 
     const bcrypt = require("bcrypt");
-    const saltRounds = 10;
-    bcrypt.hash(req.body.password, saltRounds, async function (err, hash) {
-        if (err)
-            return next({
-                status: 500,
-                error: "error al encriptar la contraseña",
-                trace: err,
-            });
-        req.body.password = hash;
-        console.log(req.body)
-        conn.promise()
-            .query(`
-                UPDATE users 
-                SET ?
-                WHERE users.id = ?
-            `, [req.body, req.USER.id])
-            .then(([users]) => {
-                res.json(users)
-            })
-            .catch(err => {
+    const salt = 10;
+    let image = ""
+
+    if (req.files && req.files.image)
+        image = req.files.image
+
+    uploadImage(image, (imageName, err) => {
+        const salt = 10;
+        const myPlaintextPassword = req.body.password;
+
+        if (imageName) req.body.image = imageName
+        if (err) return next({
+            status: 400,
+            error: err
+        })
+
+        bcrypt.hash(req.body.password, salt, async function (err, hash) {
+            if (err)
                 return next({
                     status: 500,
-                    error: `error al modificar el usuario`,
-                    trace: err
+                    error: "error al encriptar la contraseña",
+                    trace: err,
                 });
-            })
-    });
+            req.body.password = hash;
+            conn.promise()
+                .query(`
+                    UPDATE users 
+                    SET ?
+                    WHERE users.id = ?
+                `, [req.body, req.USER.id])
+                .then(([users]) => {
+                    res.json(users)
+                })
+                .catch(err => {
+                    return next({
+                        status: 500,
+                        error: `error al modificar el usuario`,
+                        trace: err
+                    });
+                })
+        });
+    })
 }
 
 async function del(req, res, next) {

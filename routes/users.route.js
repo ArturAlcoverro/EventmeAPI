@@ -11,7 +11,7 @@ const authMiddleware = require("../authentication");
 
 //PUBLIC
 router.post("/login", authValidator.login, authController.login);
-router.post("/", authController.register);
+router.post("/", authValidator.register, authController.register);
 
 router.use(authMiddleware);
 

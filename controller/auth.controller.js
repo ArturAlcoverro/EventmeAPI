@@ -1,5 +1,7 @@
 const conn = require("../database/connection");
-let bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt");
+const { uploadImage } = require("../upload")
+
 
 async function insert(user) {
     const [resultado] = await conn
@@ -40,7 +42,7 @@ async function login(req, res, next) {
                 JSON.stringify(user),
                 process.env.ACCESS_TOKEN_SECRET
             );
-            res.json({ token });
+            res.json({ accessToken: token });
         });
     } catch (error) {
         return next({ status: 500, error: "Recurso no encontrado", stacktrace: error });
@@ -48,25 +50,36 @@ async function login(req, res, next) {
 }
 
 async function register(req, res, next) {
-    const saltRounds = 10;
-    const myPlaintextPassword = req.body.password;
-    console.log(salt);
-    bcrypt.hash(myPlaintextPassword, salt, async function (err, hash) {
-        if (err)
-            return next({
-                status: 500,
-                error: "error al encriptar el password",
-                trace: err,
-            });
-        console.log(hash)
-        req.body.password = hash;
-        try {
-            const response = await insert(req.body);
-            res.status(201).json(response);
-        } catch (ex) {
-            return next({ status: 500, error: "error al insertar el usuario", trace: ex });
-        }
-    });
+    let image = ""
+    if (req.files && req.files.image)
+        image = req.files.image
+    uploadImage(image, (imageName, err) => {
+        const salt = 10;
+        const myPlaintextPassword = req.body.password;
+
+        if (imageName) req.body.image = imageName
+        if (err) return next({
+            status: 400,
+            error: err
+        })
+
+        bcrypt.hash(myPlaintextPassword, salt, async function (err, hash) {
+            if (err)
+                return next({
+                    status: 500,
+                    error: "error al encriptar el password",
+                    trace: err,
+                });
+            console.log(hash)
+            req.body.password = hash;
+            try {
+                const response = await insert(req.body);
+                res.status(201).json(response);
+            } catch (ex) {
+                return next({ status: 500, error: "error al insertar el usuario", trace: ex });
+            }
+        })
+    })
 }
 
 module.exports = { login, register };

@@ -1,4 +1,5 @@
 const conn = require("../database/connection");
+const { uploadImage } = require("../upload")
 
 async function create(req, res, next) {
     req.body.owner_id = req.USER.id;

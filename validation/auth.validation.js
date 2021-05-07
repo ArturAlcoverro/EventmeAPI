@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const validator = require("./validator")
 
-function login(req, res, next) {
+async function login(req, res, next) {
     const schema = Joi.object().keys({
         email: Joi.string().email({ tlds: { allow: false } }).required(),
         password: Joi.string().required()
@@ -9,4 +9,14 @@ function login(req, res, next) {
     validator.validate(schema, req.body, next)
 }
 
-module.exports = { login }
+async function register(req, res, next) {
+    const schema = Joi.object().keys({
+        name: Joi.string().required(),
+        last_name: Joi.string().required(),
+        email: Joi.string().email({ tlds: { allow: false } }).required(),
+        password: Joi.string().required()
+    })
+    validator.validate(schema, req.body, next)
+}
+
+module.exports = { login, register }
