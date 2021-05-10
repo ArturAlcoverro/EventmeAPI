@@ -1,6 +1,9 @@
 const router = require("express").Router();
 
 const controller = (require)("../controller/messages.controller")
+const validator = require("../validation/messages.validation");
+
+
 const authMiddleware = require("../authentication");
 
 router.use(authMiddleware);

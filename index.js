@@ -1,7 +1,9 @@
 require("dotenv").config();
 
-const express = require("express");
-const app = express();
+var compression = require('compression');
+var express = require('express');
+var app = express();
+
 
 const fileupload = require("express-fileupload")
 
@@ -13,6 +15,7 @@ const eventsRoute = require("./routes/events.route");
 const friendsRoute = require("./routes/friends.route");
 const messagesRoute = require("./routes/messages.route");
 
+app.use(compression());
 app.use(express.json());
 app.use(fileupload())
 
@@ -32,7 +35,7 @@ app.all("/api/*", (req, res, next) => {
 
 app.use((err, req, res, next) => {
 	console.log("ERROR:", err);
-	if(err.status) res.status(err.status)
+	if (err.status) res.status(err.status)
 	res.json(err);
 });
 

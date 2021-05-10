@@ -2,23 +2,37 @@ const conn = require("../database/connection");
 const { uploadImage } = require("../upload")
 
 async function create(req, res, next) {
-    req.body.owner_id = req.USER.id;
-    try {
-        const [result] = await conn.promise()
-            .query(`INSERT INTO events SET ?`, [req.body])
+    let image = ""
 
-        const [event] = await conn.promise()
-            .query(`SELECT * FROM events WHERE id = ?`, [result.insertId])
+    if (req.files && req.files.image)
+        image = req.files.image
 
-        res.status(201).json(event[0])
-    }
-    catch (err) {
-        return next({
-            status: 500,
-            error: `Server error`,
-            trace: err
-        });
-    }
+    uploadImage(image, async function (imageName, err) {
+        if (err) return next({
+            status: 400,
+            error: err
+        })
+
+        if (imageName) req.body.image = imageName
+        req.body.owner_id = req.USER.id;
+
+        try {
+            const [result] = await conn.promise()
+                .query(`INSERT INTO events SET ?`, [req.body])
+
+            const [event] = await conn.promise()
+                .query(`SELECT * FROM events WHERE id = ?`, [result.insertId])
+
+            res.status(201).json(event[0])
+        }
+        catch (err) {
+            return next({
+                status: 500,
+                error: `Server error`,
+                trace: err
+            });
+        }
+    })
 }
 
 async function get(req, res, next) {
@@ -52,28 +66,43 @@ async function getByID(req, res, next) {
 }
 
 async function update(req, res, next) {
-    try {
-        const [event] = await conn.promise()
-            .query(`SELECT owner_id FROM events WHERE id = ?`, [req.params.ID])
+    let image = ""
+
+    if (req.files && req.files.image)
+        image = req.files.image
+
+    uploadImage(image, async function (imageName, err) {
+        if (err) return next({
+            status: 400,
+            error: err
+        })
+
+        if (imageName) req.body.image = imageName
+
+        try {
+            const [event] = await conn.promise()
+                .query(`SELECT owner_id FROM events WHERE id = ?`, [req.params.ID])
 
             if (event[0].owner_id !== req.USER.id)
-            return next({ status: 403, error: `you do not have permission to update this event` });
+                return next({ status: 403, error: `You do not have permission to update this event` });
 
-        const [result] = await conn.promise()
-            .query(`UPDATE events SET ? WHERE id = ?`, [req.body, req.params.ID])
+            const [result] = await conn.promise()
+                .query(`UPDATE events SET ? WHERE id = ?`, [req.body, req.params.ID])
 
-        const [updatedEvent] = await conn.promise()
-            .query(`SELECT * FROM events WHERE id = ?`, [req.params.ID])
+            const [updatedEvent] = await conn.promise()
+                .query(`SELECT * FROM events WHERE id = ?`, [req.params.ID])
 
-        res.status(200).json(updatedEvent[0])
-    }
-    catch (err) {
-        return next({
-            status: 409,
-            error: `the event could not be updated`,
-            trace: err
-        });
-    }
+            res.status(200).json(updatedEvent[0])
+        }
+        catch (err) {
+            return next({
+                status: 409,
+                error: `The event could not be updated`,
+                trace: err
+            });
+        }
+    })
+
 }
 
 async function del(req, res, next) {
@@ -82,7 +111,7 @@ async function del(req, res, next) {
             .query(`SELECT owner_id FROM events WHERE id = ?`, [req.params.ID])
 
         if (event[0].owner_id !== req.USER.id)
-            return next({ status: 403, error: `you do not have permission to delete this event` });
+            return next({ status: 403, error: `You do not have permission to delete this event` });
 
         const [result] = await conn.promise()
             .query(`DELETE FROM events WHERE id = ?`, [result.insertId])

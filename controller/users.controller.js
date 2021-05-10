@@ -48,15 +48,13 @@ async function update(req, res, next) {
         image = req.files.image
 
     uploadImage(image, (imageName, err) => {
-        const salt = 10;
-        const myPlaintextPassword = req.body.password;
-
-        if (imageName) req.body.image = imageName
         if (err) return next({
             status: 400,
             error: err
         })
 
+        if (imageName) req.body.image = imageName
+        
         bcrypt.hash(req.body.password, salt, async function (err, hash) {
             if (err)
                 return next({

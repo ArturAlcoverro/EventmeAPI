@@ -18,19 +18,19 @@ router.use(authMiddleware);
 //PRIVATE
 router.get("/", controller.get);
 router.get("/search", validator.search, controller.search);
-router.put("/", controller.update);
+router.put("/", authValidator.register, controller.update);
 router.delete("/", controller.del);
 
-router.get("/:ID", controller.getById);
-router.get("/:ID/events", controller.getEvents);
-router.get("/:ID/events/future", controller.getFutureEvents);
-router.get("/:ID/events/finished", controller.getFinishedEvents);
-router.get("/:ID/events/current", controller.getCurrentEvents);
+router.get("/:ID", validator.id, controller.getById);
+router.get("/:ID/events", validator.id, controller.getEvents);
+router.get("/:ID/events/future", validator.id, controller.getFutureEvents);
+router.get("/:ID/events/finished", validator.id, controller.getFinishedEvents);
+router.get("/:ID/events/current", validator.id, controller.getCurrentEvents);
 
-router.get("/:ID/assistance", controller.getAssistance);
-router.get("/:ID/assistance/future", controller.getFutureAssistance);
-router.get("/:ID/assistance/finished", controller.getFinishedAssistance);
+router.get("/:ID/assistance", validator.id, controller.getAssistance);
+router.get("/:ID/assistance/future", validator.id, controller.getFutureAssistance);
+router.get("/:ID/assistance/finished", validator.id, controller.getFinishedAssistance);
 
-router.get("/:ID/friends", controller.getFriends);
+router.get("/:ID/friends", validator.id, controller.getFriends);
 
 module.exports = router;

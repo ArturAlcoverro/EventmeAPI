@@ -1,5 +1,8 @@
 const router = require("express").Router();
 const controller = require("../controller/friends.controller")
+const validator = require("../validation/friends.validation");
+
+
 const authMiddleware = require("../authentication");
 
 router.use(authMiddleware);
