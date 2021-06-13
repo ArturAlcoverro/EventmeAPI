@@ -1,12 +1,23 @@
+/** Events controller
+ * @module controller/events
+ */
+
 const conn = require("../database/connection");
 const { uploadImage } = require("../upload")
 
+/**
+ * Endpoint que inserta un evento en la BBDD
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function create(req, res, next) {
     let image = ""
 
     if (req.files && req.files.image)
         image = req.files.image
 
+    //Función que sube la imagen recibida al servidor
     uploadImage(image, async function (imageName, err) {
         if (err) return next({
             status: 400,
@@ -35,6 +46,12 @@ async function create(req, res, next) {
     })
 }
 
+/**
+ * Endpoint de devuelve todos los eventos de la BBDD
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function get(req, res, next) {
     conn.promise()
         .query(`SELECT * FROM events`)
@@ -50,6 +67,12 @@ async function get(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que devuelve el evento de la ID recibida en la request
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function getByID(req, res, next) {
     conn.promise()
         .query(`SELECT * FROM events WHERE id = ?`, [req.params.ID])
@@ -65,12 +88,19 @@ async function getByID(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que actualiza un evento existente
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function update(req, res, next) {
     let image = ""
 
     if (req.files && req.files.image)
         image = req.files.image
 
+    //Función que sube la imagen recibida al servidor
     uploadImage(image, async function (imageName, err) {
         if (err) return next({
             status: 400,
@@ -105,6 +135,12 @@ async function update(req, res, next) {
 
 }
 
+/**
+ * Endpoint que elimina el evento con la ID recibida en la request
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function del(req, res, next) {
     try {
         const [event] = await conn.promise()
@@ -127,6 +163,13 @@ async function del(req, res, next) {
     }
 }
 
+/**
+ * Endpoint que devuelve todos los usuarios apuntados al evento
+ * con la ID recibida en la request
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function getAssistances(req, res, next) {
     conn.promise()
         .query(`
@@ -148,6 +191,12 @@ async function getAssistances(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que devuelve la assistencia de un usuario concreto a un evento concreto
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function getAssistancesByUser(req, res, next) {
     conn.promise()
         .query(`
@@ -167,6 +216,12 @@ async function getAssistancesByUser(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que crea una asistencia a un evento al usuario autenticado
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function createAssistance(req, res, next) {
     conn.promise()
         .query(`
@@ -193,6 +248,13 @@ async function createAssistance(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que actualitza la assistencia del usuario autenticado 
+ * para el evento con la ID recibida en la request
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function updateAssistance(req, res, next) {
     conn.promise()
         .query(`
@@ -219,6 +281,13 @@ async function updateAssistance(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que elimina la asistencia del usuario autenticado
+ * para el evento con la ID recibida en la request
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function deleteAssistance(req, res, next) {
     conn.promise()
         .query(`

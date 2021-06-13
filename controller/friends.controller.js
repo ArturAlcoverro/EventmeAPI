@@ -1,6 +1,16 @@
+/** Friends controller
+ * @module controller/friends
+ */
+
 const conn = require("../database/connection");
 
-
+/**
+ * Endpoint que devuelve las peticiones de amistad
+ * enviadas al usuario autenticado 
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function getRequests(req, res, next) {
     conn.promise()
         .query(`
@@ -23,6 +33,12 @@ async function getRequests(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que devuelve todas las amistades del usuario autenticado
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function get(req, res, next) {
     conn.promise()
         .query(`
@@ -45,6 +61,13 @@ async function get(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que inserta una peticion de amistad a la BBDD
+ * del usuario autenticado hacia el usuario con la ID recibida en la request
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function request(req, res, next) {
     conn.promise()
         .query(`
@@ -53,7 +76,7 @@ async function request(req, res, next) {
             user_id_friend = ?,
             status = 0
         `, [req.USER.id, req.params.ID])
-        .then(([requests]) => {
+        .then(() => {
             res.status(204).send()
         })
         .catch(err => {
@@ -65,6 +88,12 @@ async function request(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que accepta una peticion de amistad (status 1)
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function accept(req, res, next) {
     conn.promise()
         .query(`
@@ -90,6 +119,12 @@ async function accept(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que elimina una peticion de amistad (la deniega)
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function del(req, res, next) {
     conn.promise()
         .query(`

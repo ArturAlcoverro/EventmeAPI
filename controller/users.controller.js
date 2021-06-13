@@ -1,6 +1,17 @@
+/** Users controller
+ * @module controller/users
+ */
+
 const conn = require("../database/connection");
 const { uploadImage } = require("../upload")
 
+/**
+ * Endpoint que busca todos los usuarios a traves 
+ * del nombre, apellido y correo electronico
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
 async function search(req, res, next) {
     const like = `%${req.query.s}%`
 
@@ -24,6 +35,13 @@ async function search(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que busca todos los usuarios a traves
+ * del nombre, apellido y correo electronico
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
 async function get(req, res, next) {
     conn.promise()
         .query(`SELECT id, name, last_name, image, email FROM users`)
@@ -39,6 +57,13 @@ async function get(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que busca todos los usuarios a traves
+ * del nombre, apellido y correo electronico
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
 async function update(req, res, next) { 
     const bcrypt = require("bcrypt");
     const salt = 10;
@@ -58,7 +83,7 @@ async function update(req, res, next) {
         bcrypt.hash(req.body.password, salt, async function (err, hash) {
             if (err)
                 return next({
-                    status: 500,
+                    status: 409,
                     error: "error al encriptar la contraseña",
                     trace: err,
                 });
@@ -74,8 +99,8 @@ async function update(req, res, next) {
                 })
                 .catch(err => {
                     return next({
-                        status: 500,
-                        error: `error al modificar el usuario`,
+                        status: 409,
+                        error: `Error al modificar el usuario`,
                         trace: err
                     });
                 })
@@ -83,6 +108,13 @@ async function update(req, res, next) {
     })
 }
 
+/**
+ * Endpoint que busca todos los usuarios a traves
+ * del nombre, apellido y correo electronico
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
 async function del(req, res, next) {
     conn.promise()
         .query(`
@@ -101,6 +133,13 @@ async function del(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que busca todos los usuarios a traves
+ * del nombre, apellido y correo electronico
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
 async function getById(req, res, next) {
     conn.promise()
         .query(` 
@@ -119,6 +158,13 @@ async function getById(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que busca todos los usuarios a traves
+ * del nombre, apellido y correo electronico
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
 async function getEvents(req, res, next) {
     conn.promise()
         .query(`
@@ -137,6 +183,13 @@ async function getEvents(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que busca todos los usuarios a traves
+ * del nombre, apellido y correo electronico
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
 async function getFutureEvents(req, res, next) {
     conn.promise()
         .query(`
@@ -156,6 +209,13 @@ async function getFutureEvents(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que busca todos los usuarios a traves
+ * del nombre, apellido y correo electronico
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
 async function getFinishedEvents(req, res, next) {
     conn.promise()
         .query(`
@@ -175,6 +235,13 @@ async function getFinishedEvents(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que busca todos los usuarios a traves
+ * del nombre, apellido y correo electronico
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
 async function getCurrentEvents(req, res, next) {
     conn.promise()
         .query(`
@@ -195,6 +262,13 @@ async function getCurrentEvents(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que busca todos los usuarios a traves
+ * del nombre, apellido y correo electronico
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ */
 async function getAssistance(req, res, next) {
     conn.promise()
         .query(`

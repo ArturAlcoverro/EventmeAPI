@@ -11,7 +11,6 @@ function authenticate(req, res, next) {
     return next({
       status: "401",
       error: "No estas autenticado",
-      stack: err,
     });
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
@@ -19,7 +18,7 @@ function authenticate(req, res, next) {
       return next({
         status: "401",
         error: "No estas autenticado",
-        stack: err,
+        trace: err,
       });
 
     conn.promise()
@@ -30,7 +29,6 @@ function authenticate(req, res, next) {
           next({
             status: "401",
             error: "No estas autenticado",
-            stack: err,
           });
         }
         req.USER = user;
@@ -40,7 +38,7 @@ function authenticate(req, res, next) {
         next({
           status: 500,
           error: `Server error`,
-          track: err
+          trace: err
         });
       })
   });

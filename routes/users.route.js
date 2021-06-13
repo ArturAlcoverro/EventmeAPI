@@ -1,3 +1,7 @@
+/** Users routes
+ * @module route/users
+ */
+
 const express = require("express");
 const router = require("express").Router();
 

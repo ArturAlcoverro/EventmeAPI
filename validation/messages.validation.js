@@ -1,6 +1,5 @@
 const Joi = require('joi');
 
-
 async function create(req, res, next) {
     const schema = Joi.object({
         content: Joi.string().trim().required(),
@@ -21,9 +20,9 @@ async function create(req, res, next) {
 }
 
 
-const idUser = async function (req, res, next) {
+const userID = async function (req, res, next) {
     const schema = Joi.object({
-        ID_USER: Joi.number(),
+        USER_ID: Joi.number(),
     })
     
     const result = schema.validate(req.params, { stripUnknown: true })
@@ -36,4 +35,4 @@ const idUser = async function (req, res, next) {
     return next()
 }
 
-module.exports = { create, idUser }
+module.exports = { create, userID }

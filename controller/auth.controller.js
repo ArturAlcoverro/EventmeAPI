@@ -1,8 +1,17 @@
+/** Users authentication controller
+ * @module controller/auth
+ */
+
 const conn = require("../database/connection");
 const bcrypt = require("bcrypt");
 const { uploadImage } = require("../upload")
 
-
+/**
+ * Inserta un usuario a la BBDD
+ * @param {User} user 
+ * @returns el usuario sin contrasenya
+ * @memberof module:controller/auth
+ */
 async function insert(user) {
     const [resultado] = await conn
         .promise()
@@ -13,6 +22,13 @@ async function insert(user) {
     return user;
 }
 
+/**
+ * Obtiene un usuario de la BBDD a partir de un email
+ * @param {String} email 
+ * @param {express.NextFunction} next 
+ * @returns el usuario
+ * @memberof module:controller/auth
+ */
 async function getUserByEmail(email, next) {
     let users
     try {
@@ -28,6 +44,14 @@ async function getUserByEmail(email, next) {
     return users[0];
 }
 
+/**
+ * Endpoint que valida el login i devuelve el token
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ * @returns token
+ * @memberof module:controller/auth
+ */
 async function login(req, res, next) {
     try {
         let user = await getUserByEmail(req.body.email, next)
@@ -49,6 +73,13 @@ async function login(req, res, next) {
     }
 }
 
+/**
+ * Endpoint que registra un nuevo usuario a la BBDD
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ * @memberof module:controller/auth
+ */
 async function register(req, res, next) {
     let image = ""
     if (req.files && req.files.image)

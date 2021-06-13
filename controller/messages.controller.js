@@ -1,11 +1,20 @@
+/** Messages controller
+ * @module controller/messages
+ */
+
 const conn = require("../database/connection");
 
+/**
+ * Endpoint que inserta un mensaje las IDs reicibidas en la request
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function create(req, res, next) {
     if (req.USER.id != req.body.user_id_send)
         return next({
             status: 403,
             error: `You do not have permission to send this message`,
-            trace: err
         });
     conn.promise()
         .query(`
@@ -24,6 +33,13 @@ async function create(req, res, next) {
         })
 }
 
+/**
+ * Endpoint que devuelve los usuarios que han enviado un mensaje
+ * al usuarios autenticado
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function getUsers(req, res, next) {
     conn.promise()
         .query(`
@@ -46,6 +62,13 @@ async function getUsers(req, res, next) {
         })
 }
 
+/**
+ * Endpoint de devuelve toda la conversacion entre el usuario autenticado
+* y el usuario con la ID recibida en la request
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {express.NextFunction} next 
+ */
 async function getByUser(req, res, next) {
     conn.promise()
         .query(`
